@@ -22,7 +22,7 @@ pipeline {
 		}
 		stage('docker build2') {
 			when {
-				environment name: 'BRANCH', value: 'PR-'
+				environment name: 'BRANCH', value: '**/PR-*'
 			}
 			steps{
 				checkout([$class: 'GitSCM', branches: [[name: '${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PreBuildMerge', options: [mergeRemote: 'https://github.com/jszalkowski/pipeline-demo.git', mergeTarget: 'master']]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/jszalkowski/pipeline-demo.git']]])
