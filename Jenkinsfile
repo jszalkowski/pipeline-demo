@@ -17,7 +17,7 @@ pipeline {
 			}
 			steps{
 				tool name: 'default', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-				sh "env && echo ${default}"
+				sh "env"
 				sh "echo docker build -t pipeline-demo ."
 			}
 		}
