@@ -1,5 +1,5 @@
 pipeline {
-	tools { maven 'docker' }
+	tools { 'docker' }
 
 	agent any
 	parameters {
