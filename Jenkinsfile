@@ -15,7 +15,7 @@ pipeline {
 				sh 'docker build -t pipeline-demo .'
 			}
 		}
-		stage('docker build') {
+		stage('docker build2') {
 			steps{
 				when { branch 'PR-' }
 				sh 'docker build -t pipeline-demo .'
@@ -23,4 +23,3 @@ pipeline {
 		}
 	}
 }
-
