@@ -7,7 +7,9 @@ pipeline {
 	}
 	stages {
 		stage ('scm') {
+			steps{
 			git branch: "${BRANCH}", url: 'https://github.com/jszalkowski/pipeline-demo.git'
+		}
 		}
 		stage('docker build') {
 			steps{
