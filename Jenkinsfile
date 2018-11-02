@@ -3,7 +3,7 @@ pipeline {
 
 	agent any
 	parameters {
-		string(name: 'BRANCH', defaultValue: 'master', description: 'Specify the branch to build')
+		string(name: 'BRANCH', description: 'Specify the branch to build')
 	}
 	stages {
 		stage ('scm') {
