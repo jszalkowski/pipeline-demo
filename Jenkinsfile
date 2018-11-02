@@ -12,18 +12,20 @@ pipeline {
 		}
 		}
 		stage('docker build') {
+			when {
+				environment name: 'BRANCH', value: 'integration'
+			}
 			steps{
-				when {
-				  environment name: 'BRANCH', value: 'integration'
-				}
+
 				sh 'docker build -t pipeline-demo .'
 			}
 		}
 		stage('docker build2') {
+			when {
+				environment name: 'BRANCH', value: 'PR-'
+			}
 			steps{
-				when {
-				  environment name: 'BRANCH', value: 'PR-'
-				}
+
 				sh 'docker build -t pipeline-demo .'
 			}
 		}
