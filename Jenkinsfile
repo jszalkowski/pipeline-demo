@@ -1,5 +1,5 @@
 pipeline {
-	tools { 'docker' }
+//	tools { 'docker' }
 
 	agent any
 	parameters {
@@ -17,7 +17,7 @@ pipeline {
 			}
 			steps{
 
-				sh 'docker build -t pipeline-demo .'
+				sh 'echo docker build -t pipeline-demo .'
 			}
 		}
 		stage('docker build2') {
@@ -26,7 +26,7 @@ pipeline {
 			}
 			steps{
 				checkout([$class: 'GitSCM', branches: [[name: '${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PreBuildMerge', options: [mergeRemote: 'https://github.com/jszalkowski/pipeline-demo.git', mergeTarget: 'master']]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/jszalkowski/pipeline-demo.git']]])
-        sh 'docker run -it --rm --name pipeline-demo -v "$(pwd)":mvn clean install'
+        sh 'echo docker run -it --rm --name pipeline-demo -v "$(pwd)":mvn clean install'
 			}
 		}
 	}
