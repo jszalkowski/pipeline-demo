@@ -1,50 +1,50 @@
+Boolean isPR = env.CHANGE_ID != null
+
 pipeline {
-//	tools { 'docker' }
+	//	tools { 'docker' }
 
 	agent any
-	parameters {
-		string(name: 'BRANCH', description: 'Specify the branch to build')
-	}
+	//	parameters {
+	//		string(name: 'BRANCH', description: 'Specify the branch to build')
+	//	}
 	stages {
 		stage ('scm') {
-			steps{
-			git branch: "${BRANCH}", url: 'https://github.com/jszalkowski/pipeline-demo.git'
-		}
+			steps{ //			git branch: "${BRANCH}", url: 'https://github.com/jszalkowski/pipeline-demo.git'
+				checkout scm }
 		}
 		stage('integration') {
 			when {
-				environment name: 'BRANCH', value: 'integration'
+				environment name: 'GIT_BRANCH', value: 'integration'
 			}
 			steps{
 				tool name: 'default', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-				sh "env"
-				sh "echo docker build -t pipeline-demo ."
+				sh "docker build -t pipeline-demo ."
 			}
 		}
 		stage('pr') {
-			when {
-				environment name: 'BRANCH', value: '**/PR-*'
-			}
+			when { expression { isPR } }
 			agent {
-			  docker {
-			    image 'maven:3.5.4-jdk-10-slim'
-			  }
+				docker { image 'pipeline-demo' }
 			}
 			steps{
-				checkout([$class: 'GitSCM', branches: [[name: '${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PreBuildMerge', options: [mergeRemote: 'https://github.com/jszalkowski/pipeline-demo.git', mergeTarget: 'master']]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/jszalkowski/pipeline-demo.git']]])
+				checkout([$class: 'GitSCM', branches: [[name: '${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [
+						[$class: 'PreBuildMerge', options: [mergeRemote: 'https://github.com/jszalkowski/pipeline-demo.git', mergeTarget: 'master']]
+					], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/jszalkowski/pipeline-demo.git']]])
 				tool name: 'default', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-        sh 'docker run -it --rm --name pipeline-demo -v "$(pwd)":mvn clean install'
+				sh 'mvn verify'
+				sh 'mvn clean install'
 			}
 		}
 
 		stage('master') {
 			when {
-				environment name: 'BRANCH', value: 'master'
+				environment name: 'GIT_BRANCH', value: 'master'
 			}
 			steps{
 				tool name: 'default', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
-				sh 'docker build -t pipeline-demo .'
+				sh 'kubectl create -f pipeline-demo.yml'
 			}
 		}
 	}
 }
+
