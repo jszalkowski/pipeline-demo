@@ -25,8 +25,8 @@ pipeline {
 				environment name: 'BRANCH', value: 'PR-'
 			}
 			steps{
-
-				sh 'docker build -t pipeline-demo .'
+				checkout([$class: 'GitSCM', branches: [[name: '${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PreBuildMerge', options: [mergeRemote: 'https://github.com/jszalkowski/pipeline-demo.git', mergeTarget: 'master']]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/jszalkowski/pipeline-demo.git']]])
+        sh 'docker run -it --rm --name pipeline-demo -v "$(pwd)":mvn clean install'
 			}
 		}
 	}
